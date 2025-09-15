@@ -15,3 +15,106 @@ Design a system that allows you to control multiple smart home devices with ease
 
 Your challenge is to apply a design pattern that provides a flexible and scalable way to control a variety of smart home devices, ensuring that new devices can be added without disrupting the existing system's functionality.
 
+## Class Diagram
+
+![Smart Home Automation Class Diagram](commandPatternImage.png)
+
+```mermaid
+classDiagram
+    direction LR
+
+    class SmartHomeApp {
+    }
+
+    class RemoteControl {
+        +setCommand(Command): void
+        +pressButton(): void
+    }
+
+    class Command {
+        <<interface>>
+        +execute(): void
+    }
+
+    class TurnOnCommand {
+        -device: Device
+        +TurnOnCommand(Device)
+        +execute(): void
+    }
+
+    class TurnOffCommand {
+        -device: Device
+        +TurnOffCommand(Device)
+        +execute(): void
+    }
+
+    class IncreaseTempCommand {
+        -device: Device
+        +IncreaseTempCommand(Device)
+        +execute(): void
+    }
+
+    class DecreaseVolumeCommand {
+        -device: Device
+        +DecreaseVolumeCommand(Device)
+        +execute(): void
+    }
+
+    class Device {
+        <<interface>>
+        +on(): void
+        +off(): void
+    }
+
+    class Light {
+        +setBrightness(level: int): void
+        +on(): void
+        +off(): void
+    }
+
+    class Thermostat {
+        +setTemperature(temp: int): void
+        +on(): void
+        +off(): void
+    }
+
+    class MusicPlayer {
+        +playPlaylist(name: String): void
+        +on(): void
+        +off(): void
+    }
+
+    %% Relationships
+    SmartHomeApp --> RemoteControl : configures
+    RemoteControl ..> Command : uses
+    Command <|.. TurnOnCommand
+    Command <|.. TurnOffCommand
+    Command <|.. IncreaseTempCommand
+    Command <|.. DecreaseVolumeCommand
+
+    Device <|.. Light
+    Device <|.. Thermostat
+    Device <|.. MusicPlayer
+
+    TurnOnCommand --> Device : receiver
+    TurnOffCommand --> Device : receiver
+    IncreaseTempCommand --> Device : receiver
+    DecreaseVolumeCommand --> Device : receiver
+```
+
+## Project Structure
+
+The `src/` folder contains the Java source files implementing the Command pattern for the smart home automation system:
+
+- `Command.java`: Interface defining the `execute()` method for commands.
+- `Device.java`: Interface for devices with `on()` and `off()` methods.
+- `Light.java`: Concrete device class for lights, implements `Device` with brightness control.
+- `MusicPlayer.java`: Concrete device class for music players, implements `Device` with playlist and volume functionality.
+- `RemoteControl.java`: Invoker class that holds and executes commands.
+- `SmartHomeTest.java`: Main class demonstrating the system with test scenarios.
+- `Thermostat.java`: Concrete device class for thermostats, implements `Device` with temperature control.
+- `TurnOffCommand.java`: Concrete command class for turning devices off.
+- `TurnOnCommand.java`: Concrete command class for turning devices on.
+- `IncreaseTempCommand.java`: Concrete command class for increasing thermostat temperature.
+- `DecreaseVolumeCommand.java`: Concrete command class for decreasing music player volume.
+
